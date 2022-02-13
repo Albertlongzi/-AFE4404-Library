@@ -2,20 +2,10 @@
 # from ssd1306_lib import SSD1306
 import pyb
 import afe
-#max30102模块初始化
-# m = afe.AFE4404()
-# m.AFE_Reg_Write(0x09, 0x00)
-# print('LED3=',LED3)
-# m.reset()
-# m.setup()
-# #OLED显示屏初始化
-# # display = SSD1306(pinout={'dc': 'X5',
-# #                           'res': 'X4'},
-# #                   height=64,
-# #                   external_vcc=False)
-# display = SSD1306(pinout={'sda':'Y1'},
-#                   height=32,
-#                   external_vcc=False)
+#AFE4404模块初始化
+m = afe.AFE4404()
+m.shutdown()
+
 state = False
 
 #按键回调函数
@@ -32,11 +22,12 @@ sw.callback(f)
 if __name__ == '__main__':
     while True:
         if state:
-            m = afe.AFE4404()
+            m.setup()
             print('测量开始')
             #采样250条数据，大约10秒钟
             i=1
-            for i in range(10): #采集数据丢掉第一组和最后一组数据
+            for i in range(2): #采集数据丢掉第一组和最后一组数据
+                # print('lala')
                 LED1,LED2,LED3,Ambient = m.AFE_get_led1_val(1000)
                 print('LED1=',LED1)#Green light
                 print('LED2=',LED2)#Infrared LED
@@ -44,7 +35,11 @@ if __name__ == '__main__':
                 print('Ambient=',Ambient)
                 i=i+1
             i=1
+            m.shutdown()
+            print('测量结束')
         state = False
+        
+
 
 # if __name__ == '__main__':
 #     display.poweron()       #启动模块
