@@ -182,12 +182,12 @@ class AFE4404():
         elif not self.i2c.is_ready(address):
             print('AFE4404 device not response')
         else:
-            self.AFE_RESETZ_Init()
+            # self.AFE_RESETZ_Init()
             self.AFE_Enable_HWPDN()
             self.AFE_Disable_HWPDN()
             self.AFE_Trigger_HWReset()
             # self.AFE_Reg_Init()
-            self.setup()
+            # self.setup()
 
     def AFE_RESETZ_Init(self):
 
@@ -259,11 +259,15 @@ class AFE4404():
             print('Register Address wrong')
 
 
-    # def shutdown(self):
-    #     """
-    #     关闭模块
-    #     """
-    #     self.i2c.mem_write(b'\x80', self.address, REG_MODE_CONFIG)
+    def shutdown(self):
+        """
+        关闭灯
+        """
+        self.AFE_Disable_Read() 
+        self.AFE_Reg_Write(AFE_LEDCNTRL, 0x000000) #关灯
+        self.AFE_Enable_Read()
+
+
 
     # def reset(self, led_mode=b'\x40'):
         """
@@ -285,7 +289,7 @@ class AFE4404():
         print('Disable Read')
 
 
-    def setup(self, led_mode=b'\x03'):
+    def setup(self):
         """置
         模块的初始化设
         """
@@ -371,7 +375,7 @@ class AFE4404():
             # if self.interrupt.value() == 1:
 
             #     ADC_Freq=ADC_Freq+1
-
+            # print('huhu')
             while(self.interrupt.value() == 0): #It is a active-low interrupt
                 #等待中断信号
                 pass
@@ -384,8 +388,7 @@ class AFE4404():
             LED2_buf.append(LED2)
             LED3_buf.append(LED3)
             Ambient_buf.append(Ambient)
-
-            
+            # print('xixi')
 
         return LED1_buf, LED2_buf, LED3_buf, Ambient_buf
 
